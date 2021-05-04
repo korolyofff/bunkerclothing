@@ -14,7 +14,6 @@ import json
 import re
 
 
-
 class LuisaviaromaScraping:
     def __init__(self, driver):
         self.driver = driver
@@ -42,9 +41,11 @@ class LuisaviaromaScraping:
 
         if colour is not None:
             try:
-                self.driver.find_element_by_xpath('//*[@id="root-body"]/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div[1]/div/div/span').click()
+                self.driver.find_element_by_xpath(
+                    '//*[@id="root-body"]/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[1]/div[1]/div/div/span').click()
                 sleep(2)
-                colour_selector = self.driver.find_element_by_css_selector('#root-body > div > div > div._2CdjxFiLp1._3a-jZNt8IN > div._2AWtWi_Cud._3WUSoaaPMC._2Hm1RWYupR > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div > div')
+                colour_selector = self.driver.find_element_by_css_selector(
+                    '#root-body > div > div > div._2CdjxFiLp1._3a-jZNt8IN > div._2AWtWi_Cud._3WUSoaaPMC._2Hm1RWYupR > div:nth-child(2) > div:nth-child(1) > div > div:nth-child(2) > div > div')
                 colours = colour_selector.find_elements_by_tag_name('span')
                 for colour_ in colours:
                     if (colour_.text).lower() == colour:
@@ -56,10 +57,11 @@ class LuisaviaromaScraping:
                 print(err)
                 pass
 
-        driver_wait(self.driver, 10, By.CSS_SELECTOR, '#root-body > div > div > div._2CdjxFiLp1._3a-jZNt8IN > div._2AWtWi_Cud._3WUSoaaPMC._2Hm1RWYupR > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div._1607_GmTdI')
+        driver_wait(self.driver, 10, By.XPATH,
+                    '//*[@id="root-body"]/div/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[1]')
         try:
-            self.driver.find_element_by_css_selector(
-                '#root-body > div > div > div._2CdjxFiLp1._3a-jZNt8IN > div._2AWtWi_Cud._3WUSoaaPMC._2Hm1RWYupR > div:nth-child(2) > div:nth-child(2) > div > div:nth-child(1) > div._1607_GmTdI').click()
+            self.driver.find_element_by_xpath(
+                '//*[@id="root-body"]/div/div/div[2]/div[2]/div[2]/div[2]/div/div[1]/div[1]').click()
         except:
             check = self.check_captcha()
             if check is not None:
@@ -152,7 +154,6 @@ class LuisaviaromaScraping:
 
         return None
 
-
     def bypass_captcha(self, captcha_tag):
         # Bypassing ReCaptcha
         sitekey = captcha_tag['data-sitekey']
@@ -208,8 +209,10 @@ class AsosScraping:
         sleep(0.5)
         select = Select(self.driver.find_element_by_xpath('//*[@id="country"]'))
         select.select_by_visible_text('Ireland, Republic of')
-        driver_wait(self.driver, 10, By.XPATH, '//*[@id="chrome-modal-container"]/div/div[2]/div/div/section/form/div[3]/button')
-        self.driver.find_element_by_xpath('//*[@id="chrome-modal-container"]/div/div[2]/div/div/section/form/div[3]/button').click()
+        driver_wait(self.driver, 10, By.XPATH,
+                    '//*[@id="chrome-modal-container"]/div/div[2]/div/div/section/form/div[3]/button')
+        self.driver.find_element_by_xpath(
+            '//*[@id="chrome-modal-container"]/div/div[2]/div/div/section/form/div[3]/button').click()
         sleep(0.5)
         self.driver.get(self.SITE_URL)
 
@@ -443,7 +446,9 @@ class ShopifyAPI:
                 }
             }
 
-            requests.post(self.ADMIN_URL + '/admin/api/2021-04/products/{}/variants.json'.format(product_id), json=post_data)
+            requests.post(self.ADMIN_URL + '/admin/api/2021-04/products/{}/variants.json'.format(product_id),
+                          json=post_data)
+
 
 class Tracker:
     def __init__(self):
@@ -479,6 +484,7 @@ class Tracker:
                 target_sizes = convert_to_bunker_format(target_sizes)
                 self.update_product(sku_product, bunker_sizes, target_sizes)
                 print('Tracked Success')
+                driver.quit()
             else:
                 continue
 
@@ -495,7 +501,8 @@ class Tracker:
         for bunker_size in bunker_sizes:
             if not bunker_size in set_checkbox_sizes_list:
                 remove_checkbox_sizes_list.append(bunker_size)
-        self.api.update_product_variants(product_id, set_checkbox_sizes_list, remove_checkbox_sizes_list, create_sizes_list)
+        self.api.update_product_variants(product_id, set_checkbox_sizes_list, remove_checkbox_sizes_list,
+                                         create_sizes_list)
 
 
 def convert_to_bunker_format(sizes_json):
@@ -539,12 +546,18 @@ def create_driver():
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
     options.add_experimental_option('useAutomationExtension', False)
-    options.add_argument('--headless')
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36")
     options.add_argument('--disable-blink-features=AutomationControlled')
-    options.add_argument('--no-sandbox')
+    options.add_argument('--window-size=1920,1080')
+    options.add_argument('--ignore-certificate-errors')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--headless')
 
     return webdriver.Chrome(options=options)
+
 
 def driver_wait(driver, time, chosen_type, text):
     try:
@@ -552,7 +565,7 @@ def driver_wait(driver, time, chosen_type, text):
             EC.presence_of_element_located((chosen_type, text))
         )
     except:
-        print('Timeout {} seconds'.format(str(time)))
+        print('Timeout {} seconds: {} : {}'.format(str(time), chosen_type, text))
 
 
 def track():
