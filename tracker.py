@@ -484,9 +484,10 @@ class Tracker:
                 target_sizes = convert_to_bunker_format(target_sizes)
                 self.update_product(sku_product, bunker_sizes, target_sizes)
                 print('Tracked Success')
-                driver.quit()
             else:
                 continue
+
+        driver.quit()
 
     def update_product(self, product_id, bunker_sizes, target_sizes):
         set_checkbox_sizes_list = []
@@ -546,8 +547,7 @@ def create_driver():
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
     options.add_experimental_option('useAutomationExtension', False)
-    options.add_argument(
-        "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36")
+    options.add_argument("user-agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.75 Safari/537.36")
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--ignore-certificate-errors')
