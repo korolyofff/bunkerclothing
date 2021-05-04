@@ -1,4 +1,3 @@
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
@@ -11,9 +10,7 @@ from bs4 import BeautifulSoup
 import schedule as schedule
 from time import sleep
 import requests
-import zipfile
 import json
-import os
 import re
 
 
@@ -36,9 +33,6 @@ class LuisaviaromaScraping:
             colour = None
 
         self.driver.get(self.SITE_URL + sku)
-
-        with open('1.html', 'w') as f:
-            f.write(str(self.driver.page_source))
 
         try:
             self.driver.find_element_by_xpath('//*[@id="exp--popup"]/button').click()
@@ -550,7 +544,7 @@ def create_xpath(element):
 
 
 def create_driver():
-    PROXY = "188.225.36.81:45786"
+    PROXY = "34.255.118.172:45785"
 
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -583,23 +577,23 @@ def track():
 
 
 if __name__ == '__main__':
-    track()
-    # schedule.every().day.at("08:00").do(track)
-    # schedule.every().day.at("09:00").do(track)
-    # schedule.every().day.at("10:00").do(track)
-    # schedule.every().day.at("11:00").do(track)
-    # schedule.every().day.at("12:00").do(track)
-    # schedule.every().day.at("14:00").do(track)
-    # schedule.every().day.at("15:00").do(track)
-    # schedule.every().day.at("16:00").do(track)
-    # schedule.every().day.at("17:00").do(track)
-    # schedule.every().day.at("18:00").do(track)
-    # schedule.every().day.at("19:00").do(track)
-    # schedule.every().day.at("20:00").do(track)
-    # schedule.every().day.at("21:00").do(track)
-    # schedule.every().day.at("22:00").do(track)
-    # schedule.every().day.at("23:59").do(track)
-    #
-    # while True:
-    #     schedule.run_pending()
-    #     sleep(1)
+    schedule.every().day.at("08:00").do(track)
+    schedule.every().day.at("09:00").do(track)
+    schedule.every().day.at("10:00").do(track)
+    schedule.every().day.at("11:00").do(track)
+    schedule.every().day.at("12:00").do(track)
+    schedule.every().day.at("14:00").do(track)
+    schedule.every().day.at("15:00").do(track)
+    schedule.every().day.at("16:00").do(track)
+    schedule.every().day.at("17:00").do(track)
+    schedule.every().day.at("18:00").do(track)
+    schedule.every().day.at("19:00").do(track)
+    schedule.every().day.at("20:00").do(track)
+    schedule.every().day.at("21:00").do(track)
+    schedule.every().day.at("22:00").do(track)
+    schedule.every().day.at("23:00").do(track)
+    schedule.every().day.at("23:59").do(track)
+
+    while True:
+        schedule.run_pending()
+        sleep(1)
