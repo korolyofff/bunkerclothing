@@ -539,6 +539,7 @@ def create_driver():
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
     options.add_experimental_option('useAutomationExtension', False)
+    options.add_argument('--headless')
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -560,8 +561,8 @@ def track():
 
 
 if __name__ == '__main__':
-    schedule.every().day.at("8:00").do(track)
-    schedule.every().day.at("9:00").do(track)
+    schedule.every().day.at("08:00").do(track)
+    schedule.every().day.at("09:00").do(track)
     schedule.every().day.at("10:00").do(track)
     schedule.every().day.at("11:00").do(track)
     schedule.every().day.at("12:00").do(track)
