@@ -1,0 +1,9 @@
+pyactiveresource>=2.2.2
+PyYAML
+six
+
+[:python_version == "2.7"]
+PyJWT<=1.7.1
+
+[:python_version >= "3.6"]
+PyJWT>=2.0.0
