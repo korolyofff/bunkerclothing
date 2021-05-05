@@ -337,19 +337,24 @@ class ShopifyAPI:
 
     def get_products_json(self):
         request = requests.get(self.ADMIN_URL + '/admin/api/2021-04/products.json?limit=250')
+        products = request.json()
         page_info = self.get_page_info_id(request.headers, indent=0)
         if page_info is None:
-            return request.json()
+            return products
 
         while True:
             try:
                 request = requests.get(
                     self.ADMIN_URL + '/admin/api/2021-04/products.json?limit=250&page_info={}'.format(page_info))
+
+                for product in request.json()['products']:
+                    products['products'].append(product)
+
                 page_info = self.get_page_info_id(request.headers, indent=1)
             except:
                 break
 
-        return request.json()
+        return products
 
     def get_product_json(self, id):
         return requests.get(self.ADMIN_URL + '/admin/api/2021-04/products/{}.json'.format(id)).json()
@@ -372,6 +377,7 @@ class ShopifyAPI:
                     products_list.append(product['id'])
                     break
 
+        print(products_list)
         return products_list
 
     def get_SKU(self, product_id):
@@ -551,7 +557,7 @@ def create_xpath(element):
 
 
 def create_driver():
-    PROXY = "193:32.191.146:45785"
+    PROXY = "193.32.191.146:45785"
 
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -584,7 +590,6 @@ def track():
 
 
 if __name__ == '__main__':
-    track()
     schedule.every().day.at("08:00").do(track)
     schedule.every().day.at("09:00").do(track)
     schedule.every().day.at("10:00").do(track)
