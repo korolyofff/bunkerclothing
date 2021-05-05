@@ -5,6 +5,10 @@ class ClothingConversion:
                              '50': 'L', '52': 'XL', '54': 'XXL', '56': 'XXXL',
                              '58': '4XL', '60': '5XL'}
 
+        self.MONCLER_TO_SML = {'00': 'XXS', '0': 'XS', '1': 'M', '2': 'L', '3': 'M/L', '4': 'XL', '5': 'XL/XXL',
+                               '6': 'XXL',
+                               '7': '3XL', '8': '4XL'}
+
     def convert(self, sizes_lists, sizes_dict):
         converted_sizes = []
         for size in sizes_lists:
@@ -74,6 +78,13 @@ def convert_sizes(json):
 
         elif 'CM' in size_type:
             return json
+
+        elif 'moncler' in size_type.lower():
+            return {
+                'object_type': object_type,
+                'size_type': 'S/M/L',
+                'sizes': object.convert(sizes, object.MONCLER_TO_SML)
+            }
 
     elif object_type == 'Shoes' and size_type is not None:
         object = ShoesConversion(json)

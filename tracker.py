@@ -362,7 +362,6 @@ class ShopifyAPI:
     def get_all_SKU_products(self):
         counter = 1
         products_list = []
-        # todo fix func
         products = self.get_products_json()
         for product in products['products']:
             for variant in product['variants']:
@@ -377,7 +376,7 @@ class ShopifyAPI:
                     products_list.append(product['id'])
                     break
 
-        print(products_list)
+
         return products_list
 
     def get_SKU(self, product_id):
