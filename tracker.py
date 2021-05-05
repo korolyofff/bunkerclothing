@@ -201,6 +201,7 @@ class AsosScraping:
         self.sizes = self.scrape_sizes()
         self.converted_sizes = conversion.convert_sizes(self.sizes)
 
+
         return self.converted_sizes
 
     def set_ireland(self):
@@ -228,11 +229,14 @@ class AsosScraping:
                         if size.text == 'Please select' or size['disabled'] == '':
                             continue
                     except:
-                        self.sizes_list.append((size.string).split(' - ')[0])
+                        size = (size.string).split(' - ')[0]
+                        if size == 'No Size':
+                            size = 'One size'
+                        self.sizes_list.append(size)
 
                     object_type = self.get_object_type()
                     size_type = self.get_size_type()
-                    if not size_type == 'S/M/L':
+                    if not size_type == 'S/M/L' and 'One size' not in self.sizes_list:
                         sizes_value = self.get_sizes_value()
                     else:
                         sizes_value = self.sizes_list
@@ -522,6 +526,9 @@ def convert_to_bunker_format(sizes_json):
     elif sizes_json['size_type'] == 'CM':
         return sizes
 
+    else:
+        return sizes
+
 
 def create_soup(driver):
     return BeautifulSoup(driver.page_source, 'lxml')
@@ -544,7 +551,7 @@ def create_xpath(element):
 
 
 def create_driver():
-    PROXY = "34.255.118.172:45785"
+    PROXY = "193:32.191.146:45785"
 
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-automation'])
@@ -577,6 +584,7 @@ def track():
 
 
 if __name__ == '__main__':
+    track()
     schedule.every().day.at("08:00").do(track)
     schedule.every().day.at("09:00").do(track)
     schedule.every().day.at("10:00").do(track)
