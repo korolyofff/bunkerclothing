@@ -53,8 +53,7 @@ class LuisaviaromaScraping:
                         break
 
                 sleep(2)
-            except Exception as err:
-                print(err)
+            except:
                 pass
 
         driver_wait(self.driver, 10, By.XPATH,
@@ -72,6 +71,7 @@ class LuisaviaromaScraping:
         soup = create_soup(self.driver)
 
         sizes = soup.find_all('div', '_3kJMeU2j7k')
+
         if len(sizes) > 0:
             for size in sizes:
                 size_json = json.loads(size['data-value'])
@@ -83,6 +83,8 @@ class LuisaviaromaScraping:
                 json_data = {'object_type': object_type,
                              'size_type': size_type,
                              'sizes': first_sizes_list}
+
+
 
                 new_json_data = conversion.convert_sizes(json_data)
 
@@ -101,7 +103,10 @@ class LuisaviaromaScraping:
             except IndexError:
                 return
 
-            if 'IT' in size_value:
+            if 'moncler' in size_value.lower():
+                size_type = 'Moncler'
+
+            elif 'IT' in size_value:
                 size_type = 'IT'
 
             elif 'UK' in size_value:
@@ -118,7 +123,7 @@ class LuisaviaromaScraping:
             else:
                 size_type = 'None'
 
-            if size_value is not None:
+            if size_value is not None and size_type != 'Moncler':
                 num_filter = filter(str.isdigit, size_value)
                 size_value = ''.join(num_filter)
 
@@ -127,6 +132,7 @@ class LuisaviaromaScraping:
             json_data = {'object_type': object_type,
                          'size_type': size_type,
                          'sizes': first_sizes_list}
+
 
             new_json_data = conversion.convert_sizes(json_data)
 
@@ -137,7 +143,10 @@ class LuisaviaromaScraping:
     def get_object_type(self, soup):
         objects = soup.find_all('span', {'itemprop': 'name'})
         if len(objects) > 0:
-            return objects[1].string
+            if objects[2].string == 'Jeans':
+                return 'Jeans'
+            else:
+                return objects[1].string
 
     '''XML, IT, UK, USA, JAPAN etc'''
 
@@ -376,7 +385,6 @@ class ShopifyAPI:
                     products_list.append(product['id'])
                     break
 
-
         return products_list
 
     def get_SKU(self, product_id):
@@ -485,12 +493,14 @@ class Tracker:
                 try:
                     target_sizes = target_tracker.get_sizes(sku)
 
+
                 except Exception as err:
                     print(err)
                     continue
 
             if target_sizes is not None and len(target_sizes) != 0:
                 target_sizes = convert_to_bunker_format(target_sizes)
+
                 self.update_product(sku_product, bunker_sizes, target_sizes)
                 print('Tracked Success')
             else:
@@ -502,6 +512,7 @@ class Tracker:
         set_checkbox_sizes_list = []
         remove_checkbox_sizes_list = []
         create_sizes_list = []
+
         for target_size in target_sizes:
             if target_size in bunker_sizes:
                 set_checkbox_sizes_list.append(target_size)
@@ -529,6 +540,14 @@ def convert_to_bunker_format(sizes_json):
         return sizes
 
     elif sizes_json['size_type'] == 'CM':
+        return sizes
+
+    elif sizes_json['size_type'] == 'IT':
+        i = 0
+        for size in sizes:
+            sizes[i] = str(size) + ' IT'
+            i += 1
+
         return sizes
 
     else:

@@ -1,3 +1,5 @@
+import re
+
 class ClothingConversion:
     def __init__(self, json):
         self.json = json
@@ -12,6 +14,12 @@ class ClothingConversion:
     def convert(self, sizes_lists, sizes_dict):
         converted_sizes = []
         for size in sizes_lists:
+
+            try:
+                size = re.findall('\d+', size)[0]
+            except:
+                pass
+
             try:
                 converted_sizes.append(sizes_dict[size])
             except:
@@ -105,6 +113,15 @@ def convert_sizes(json):
                 'size_type': 'UK',
                 'sizes': object.convert(sizes, object.USA_TO_UK)
             }
+
+    elif object_type == 'Jeans':
+        if 'IT' in size_type:
+            return {
+                'object_type': object_type,
+                'size_type': 'IT',
+                'sizes': sizes
+            }
+
     else:
         return json
 
